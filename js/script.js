@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     var timer;
     var teams = {};
-    var settings = { time: 60, words: 5 };
+    var settings = { time: 60, words: 50 };
     var teamNames = [];
     var currentTeamIndex = 0;
   
@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div id='settings-content'>
           <div class="setting">
             <label for="words-range">Количество слов на раунд: <span id="words-value">${settings.words}</span></label>
-            <input type="range" id="words-range" min="1" max="20" value="${settings.words}" />
+            <input type="range" id="words-range" min="1" max="100" value="${settings.words}" />
           </div>
           <div class="setting">
             <label for="time-range">Время раунда (сек): <span id="time-value">${settings.time}</span></label>
@@ -215,11 +215,11 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('main-content').innerHTML = `
         <h2>Ход команды: ${currentTeam}</h2>
         <div id="game-container">
-          <div id="swipe-left" class="swipe-zone">Пропустить</div>
+          <div id="swipe-left" class="swipe-zone"> <== Пропустить</div>
           <div id="swipe-area">
             <div id="current-word">${getRandomWord()}</div>
           </div>
-          <div id="swipe-right" class="swipe-zone">Отгадано</div>
+          <div id="swipe-right" class="swipe-zone">Отгадано ==></div>
         </div>
         <div id="timer">Оставшееся время: <span id="timer-value">${settings.time}</span> сек</div>
       `;
