@@ -1,13 +1,14 @@
 // sw.js
-
 const CACHE_NAME = 'alias-game-cache-v1';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/static/css/style.css',
-  '/static/js/script.js',
+  '/css/style.css',
+  '/js/script.js',
   '/manifest.json',
-  // Add any other assets like images, icons, etc.
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  '/image/icon.png' // Add any other assets like images, icons, etc.
 ];
 
 // Install the service worker
@@ -23,8 +24,7 @@ self.addEventListener('install', function(event) {
 // Cache and return requests
 self.addEventListener('fetch', function(event) {
   event.respondWith(
-    fetch(event.request)
-      .catch(() => caches.match(event.request))
+    fetch(event.request).catch(() => caches.match(event.request))
   );
 });
 
@@ -32,12 +32,14 @@ self.addEventListener('fetch', function(event) {
 self.addEventListener('activate', function(event) {
   const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
-    caches.keys().then(cacheNames => Promise.all(
-      cacheNames.map(cacheName => {
-        if (!cacheWhitelist.includes(cacheName)) {
-          return caches.delete(cacheName);
-        }
-      })
-    ))
+    caches.keys().then(cacheNames =>
+      Promise.all(
+        cacheNames.map(cacheName => {
+          if (!cacheWhitelist.includes(cacheName)) {
+            return caches.delete(cacheName);
+          }
+        })
+      )
+    )
   );
 });

@@ -1,26 +1,24 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Alias Game</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Add CSS -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8">
+  <title>Alias Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Add CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">Alias</h1>
-        <div id="main-content">
-            <button class="btn" onclick="startGame()">Начать</button>
-            <button class="btn" onclick="showRules()">Правила</button>
-        </div>
+  <div class="container">
+    <h1 class="title">Alias</h1>
+    <div id="main-content">
+      <button class="btn" onclick="startGame()">Начать</button>
+      <button class="btn" onclick="showRules()">Правила</button>
     </div>
-
-    <!-- Add JavaScript at the end of body for better performance -->
-    <script src="js/script.js"></script>
-</body>
-<script>
+  </div>
+  <!-- Add JavaScript at the end of body for better performance -->
+  <script src="js/script.js"></script>
+  <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
         navigator.serviceWorker.register('/sw.js')
@@ -32,4 +30,5 @@
       });
     }
   </script>
+</body>
 </html>
