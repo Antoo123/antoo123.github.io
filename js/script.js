@@ -287,50 +287,70 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
   
-    function handleRightSwipe() {
-      animateSwipe('right');
-      setTimeout(() => {
-        currentWordIndex++;
-        teams[teamNames[currentTeamIndex]]++;
-        if (currentWordIndex < settings.words) {
-          document.getElementById('current-word').textContent = getRandomWord();
-        } else {
-          clearInterval(timer);
-          nextTeam();
-        }
-      }, 300);
-    }
-  
-    function handleLeftSwipe() {
-      animateSwipe('left');
-      setTimeout(() => {
-        currentWordIndex++;
-        if (currentWordIndex < settings.words) {
-          document.getElementById('current-word').textContent = getRandomWord();
-        } else {
-          clearInterval(timer);
-          nextTeam();
-        }
-      }, 300);
-    }
-  
-    function animateSwipe(direction) {
-      const swipeArea = document.getElementById('swipe-area');
-      swipeArea.classList.add('moving');
-      if (direction === 'left') {
-        swipeArea.style.transform = 'translateX(-100vw)';
-      } else {
-        swipeArea.style.transform = 'translateX(100vw)';
+      function handleRightSwipe() {
+        animateSwipe('right');
+        playSound('correct'); // Воспроизвести звук для правильного ответа
+        setTimeout(() => {
+          currentWordIndex++;
+          teams[teamNames[currentTeamIndex]]++;
+          if (currentWordIndex < settings.words) {
+            document.getElementById('current-word').textContent = getRandomWord();
+          } else {
+            clearInterval(timer);
+            nextTeam();
+          }
+        }, 300);
       }
-      setTimeout(() => {
-        swipeArea.style.transition = 'none';
-        swipeArea.style.transform = 'translateX(0)';
-        swipeArea.offsetHeight; // Trigger reflow
-        swipeArea.style.transition = 'transform 0.3s ease-in-out';
-        swipeArea.classList.remove('moving');
-      }, 300);
-    }
-  
+      
+      function handleLeftSwipe() {
+        animateSwipe('left');
+        playSound('incorrect'); // Воспроизвести звук для неправильного ответа
+        setTimeout(() => {
+          currentWordIndex++;
+          if (currentWordIndex < settings.words) {
+            document.getElementById('current-word').textContent = getRandomWord();
+          } else {
+            clearInterval(timer);
+            nextTeam();
+          }
+        }, 300);
+      }
+      
+      function animateSwipe(direction) {
+        const swipeArea = document.getElementById('swipe-area');
+        swipeArea.classList.add('moving');
+        
+        
+        if (direction === 'left') {
+          swipeArea.style.backgroundColor = 'red'; 
+          swipeArea.style.transform = 'translateX(-100vw)';
+        } else {
+          swipeArea.style.backgroundColor = 'green'; 
+          swipeArea.style.transform = 'translateX(100vw)';
+        }
+      
+        setTimeout(() => {
+          swipeArea.style.transition = 'none';
+          swipeArea.style.transform = 'translateX(0)';
+          swipeArea.offsetHeight; // Trigger reflow
+      
+          swipeArea.style.transition = 'transform 0.3s ease-in-out';
+          swipeArea.classList.remove('moving');
+      
+          // Возвращаем исходный цвет фона
+          swipeArea.style.backgroundColor = ''; 
+        }, 300);
+      }
+      
+      function playSound(type) {
+        let sound;
+        if (type === 'correct') {
+          sound = document.getElementById('correct-sound');
+        } else {
+          sound = document.getElementById('incorrect-sound');
+        }
+        sound.play();
+      }
     function nextTeam() {
       currentTeamIndex++;
       if (currentTeamIndex < teamNames.length) {
