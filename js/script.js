@@ -183,6 +183,17 @@ document.addEventListener('DOMContentLoaded', () => {
         <h2>Настройки</h2>
         <div id='settings-content'>
           <div class="setting">
+            <label for="game-mode">Режим игры:</label>
+            <select id="game-mode">
+              <option value="default">Использовать словарь</option>
+              <option value="custom">Ввести свои слова</option>
+            </select>
+          </div>
+          <div id="custom-words" style="display:none;">
+            <label for="user-words">Введите слова (через запятую):</label>
+            <textarea id="user-words"></textarea>
+          </div>
+          <div class="setting">
             <label for="words-range">Количество слов на раунд: <span id="words-value">${settings.words}</span></label>
             <input type="range" id="words-range" min="1" max="100" value="${settings.words}" />
           </div>
@@ -193,22 +204,48 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <button class="btn" onclick="startNewGame()">Начать игру</button>
       `;
+  
       // Event listeners for settings
       document.getElementById('words-range').addEventListener('input', function() {
         settings.words = this.value;
         document.getElementById('words-value').textContent = settings.words;
       });
+  
       document.getElementById('time-range').addEventListener('input', function() {
         settings.time = this.value;
         document.getElementById('time-value').textContent = settings.time;
       });
-    }
   
-    function startNewGame() {
-      currentTeamIndex = 0;
-      currentWordIndex = 0;
-      showGameScreen();
+      // Show custom words input if "custom" mode is selected
+      document.getElementById('game-mode').addEventListener('change', function() {
+        if (this.value === 'custom') {
+          document.getElementById('custom-words').style.display = 'block';
+        } else {
+          document.getElementById('custom-words').style.display = 'none';
+        }
+      });
+  }
+  
+  function startNewGame() {
+    const gameMode = document.getElementById('game-mode').value;
+
+    if (gameMode === 'custom') {
+        const userWordsInput = document.getElementById('user-words').value;
+        if (userWordsInput.trim()) {
+            words = userWordsInput.split(',').map(word => word.trim());
+        } else {
+            alert("Введите хотя бы одно слово для начала игры.");
+            return;
+        }
+    } else {
+        // Используем словарь по умолчанию
+        words = words;
     }
+
+    currentTeamIndex = 0;
+    currentWordIndex = 0;
+    showGameScreen();
+}
   
     function showGameScreen() {
       const currentTeam = teamNames[currentTeamIndex];
@@ -351,15 +388,62 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         sound.play();
       }
-    function nextTeam() {
-      currentTeamIndex++;
-      if (currentTeamIndex < teamNames.length) {
-        currentWordIndex = 0;
-        showGameScreen();
-      } else {
-        showResults();
+      function nextTeam() {
+        // Увеличиваем индекс команды
+        currentTeamIndex++;
+      
+        // Проверяем, есть ли следующая команда
+        if (currentTeamIndex >= teamNames.length) {
+          showResults(); // Если команды закончились, показываем результаты
+          return;
+        }
+      
+        // Получаем название следующей команды
+        const nextTeamName = teamNames[currentTeamIndex];
+      
+        // Создаем элемент для сообщения
+        const nextTeamMessage = document.createElement('div');
+        nextTeamMessage.textContent = `Следующая команда: ${nextTeamName}`; // Используем название следующей команды
+      
+        // Устанавливаем стили
+        nextTeamMessage.style.fontSize = '36px';
+        nextTeamMessage.style.color = 'white';
+        nextTeamMessage.style.textAlign = 'center';
+        nextTeamMessage.style.position = 'fixed';
+        nextTeamMessage.style.top = '50%';
+        nextTeamMessage.style.left = '50%';
+        nextTeamMessage.style.transform = 'translate(-50%, -50%)';
+        nextTeamMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)'; // Полупрозрачный черный фон
+        nextTeamMessage.style.padding = '20px';
+        nextTeamMessage.style.borderRadius = '10px';
+        nextTeamMessage.style.zIndex = '1000'; // Отображать поверх других элементов
+        nextTeamMessage.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.5)'; // Тень для глубины
+        nextTeamMessage.style.opacity = '0'; // Начальная прозрачность для анимации
+        nextTeamMessage.style.transition = 'opacity 0.5s ease-in-out'; // Плавное изменение прозрачности
+      
+        // Добавляем элемент в документ
+        document.body.appendChild(nextTeamMessage);
+      
+        // Запускаем анимацию появления
+        setTimeout(() => {
+          nextTeamMessage.style.opacity = '1'; // Увеличиваем непрозрачность
+        }, 10); // Небольшая задержка для запуска анимации
+      
+        // Убираем сообщение через 2 секунды
+        setTimeout(() => {
+          // Плавное исчезновение
+          nextTeamMessage.style.opacity = '0';
+      
+          // Удаляем элемент после завершения анимации
+          setTimeout(() => {
+            nextTeamMessage.remove(); // Удаляем сообщение
+          }, 500); // Время анимации исчезновения
+      
+          // Сбрасываем индекс слов и показываем следующий экран
+          currentWordIndex = 0;
+          showGameScreen();
+        }, 2000); // Задержка в 2 секунды перед началом исчезновения
       }
-    }
   
     function showResults() {
       const sortedTeams = Object.entries(teams).sort((a, b) => b[1] - a[1]);
