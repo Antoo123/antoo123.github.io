@@ -43,8 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "Фирма-«однодневка»", "Фишинг", "Фонд", "Форекс", "Франшиза", 
       "ФРОМУ", "Хакер", "Халатность", "Хеджирование", "Хищение", 
       "Цена", "Цифровизация", "Чек", "Штраф", "Экономика", 
-      "Экономист", "Экспорт", "Эмиссия"
-  ]
+      "Экономист", "Экспорт", "Эмиссия"]
     var timer;
     var teams = {};
     var settings = { time: 60, words: 50 };
@@ -299,9 +298,14 @@ document.addEventListener('DOMContentLoaded', () => {
         animateSwipe('right');
         playSound('correct'); // Воспроизвести звук для правильного ответа
         setTimeout(() => {
-          currentWordIndex++;
+          // Увеличиваем индекс текущего слова
           teams[teamNames[currentTeamIndex]]++;
-          if (currentWordIndex < settings.words) {
+          
+          // Удаляем текущее слово из списка words
+          words.splice(currentWordIndex, 1);
+          
+          // Проверяем, есть ли еще слова в списке
+          if (words.length > 0) {
             document.getElementById('current-word').textContent = getRandomWord();
           } else {
             clearInterval(timer);
@@ -314,8 +318,14 @@ document.addEventListener('DOMContentLoaded', () => {
         animateSwipe('left');
         playSound('incorrect'); // Воспроизвести звук для неправильного ответа
         setTimeout(() => {
+          // Увеличиваем индекс текущего слова
           currentWordIndex++;
-          if (currentWordIndex < settings.words) {
+      
+          // Удаляем текущее слово из списка words
+          words.splice(currentWordIndex - 1, 1); // Удаляем предыдущее слово
+      
+          // Проверяем, есть ли еще слова в списке
+          if (words.length > 0) {
             document.getElementById('current-word').textContent = getRandomWord();
           } else {
             clearInterval(timer);
