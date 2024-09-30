@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const container = document.querySelector('.container');
         const titleElement = document.createElement('h1');
         titleElement.className = 'title';
-        titleElement.textContent = 'Alias';
+        titleElement.textContent = 'Исходный код';
         container.insertBefore(titleElement, container.firstChild);
       }
       document.getElementById('main-content').innerHTML = `
@@ -324,7 +324,6 @@ document.addEventListener('DOMContentLoaded', () => {
           // Удаляем текущее слово из списка words
           words.splice(currentWordIndex - 1, 1); // Удаляем предыдущее слово
       
-          // Проверяем, есть ли еще слова в списке
           if (words.length > 0) {
             document.getElementById('current-word').textContent = getRandomWord();
           } else {
@@ -372,21 +371,19 @@ document.addEventListener('DOMContentLoaded', () => {
       function nextTeam() {
         // Увеличиваем индекс команды
         currentTeamIndex++;
-      
+    
         // Проверяем, есть ли следующая команда
         if (currentTeamIndex >= teamNames.length) {
-          showResults(); // Если команды закончились, показываем результаты
-          return;
+            showResults(); // Если команды закончились, показываем результаты
+            return;
         }
-      
+    
         // Получаем название следующей команды
         const nextTeamName = teamNames[currentTeamIndex];
-      
-        // Создаем элемент для сообщения
+    
         const nextTeamMessage = document.createElement('div');
-        nextTeamMessage.textContent = `Следующая команда: ${nextTeamName}`; // Используем название следующей команды
-      
-        // Устанавливаем стили
+        nextTeamMessage.textContent = `Следующая команда: ${nextTeamName} нажмите для продолжения`; 
+    
         nextTeamMessage.style.fontSize = '36px';
         nextTeamMessage.style.color = 'white';
         nextTeamMessage.style.textAlign = 'center';
@@ -401,30 +398,34 @@ document.addEventListener('DOMContentLoaded', () => {
         nextTeamMessage.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.5)'; // Тень для глубины
         nextTeamMessage.style.opacity = '0'; // Начальная прозрачность для анимации
         nextTeamMessage.style.transition = 'opacity 0.5s ease-in-out'; // Плавное изменение прозрачности
-      
+    
         // Добавляем элемент в документ
         document.body.appendChild(nextTeamMessage);
-      
+    
         // Запускаем анимацию появления
         setTimeout(() => {
-          nextTeamMessage.style.opacity = '1'; // Увеличиваем непрозрачность
+            nextTeamMessage.style.opacity = '1'; // Увеличиваем непрозрачность
         }, 10); // Небольшая задержка для запуска анимации
-      
-        // Убираем сообщение через 2 секунды
-        setTimeout(() => {
-          // Плавное исчезновение
-          nextTeamMessage.style.opacity = '0';
-      
-          // Удаляем элемент после завершения анимации
-          setTimeout(() => {
-            nextTeamMessage.remove(); // Удаляем сообщение
-          }, 500); // Время анимации исчезновения
-      
-          // Сбрасываем индекс слов и показываем следующий экран
-          currentWordIndex = 0;
-          showGameScreen();
-        }, 2000); // Задержка в 2 секунды перед началом исчезновения
-      }
+    
+        function handleScreenClick() {
+            nextTeamMessage.style.opacity = '0';
+    
+            setTimeout(() => {
+                nextTeamMessage.remove(); 
+            }, 500); 
+    
+            
+            currentWordIndex = 0;
+            showGameScreen();
+    
+            
+            document.removeEventListener('click', handleScreenClick);
+        }
+    
+        
+        document.addEventListener('click', handleScreenClick);
+    }
+    
   
     function showResults() {
       const sortedTeams = Object.entries(teams).sort((a, b) => b[1] - a[1]);
